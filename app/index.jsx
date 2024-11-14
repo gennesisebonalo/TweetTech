@@ -1,74 +1,50 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ImageBackground, Dimensions } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import * as Font from 'expo-font';
-import { useRouter } from 'expo-router';
-
-const backgroundImage = require('../assets/images/background.png');
-const logoImage = require('../assets/images/logo.png');
+import { StatusBar } from 'expo-status-bar';
+import { ScrollView, Text, View, Image, ImageBackground } from 'react-native';
+import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { images } from '../constants';
+import CustomButton from '../assets/components/CustomButton';
 
 export default function App() {
-  const router = useRouter();
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const logo1Size = { width: 1000, height: 400 }; // Adjusted logo size
 
-  useEffect(() => {
-    async function loadFonts() {
-      await Font.loadAsync({
-        'RoadRage-Regular': require('../assets/fonts/RoadRage-Regular.ttf'), 
-      });
-      setFontsLoaded(true);
-    }
-    loadFonts();
-  }, []);
-
-  if (!fontsLoaded) {
-    return null; 
-  }
+  // URL of the background image
+  const backgroundImageUrl = 'https://i.pinimg.com/736x/73/24/aa/7324aa0142aed97c5eb8b8f64c7d2937.jpg'; // Background image URL
 
   return (
-    <ImageBackground 
-      source={backgroundImage}
-      style={styles.background}
-      resizeMode="cover" 
-      blurRadius={5}
+    <ImageBackground
+      source={{ uri: backgroundImageUrl }} // Using URL for background image
+      style={{ flex: 1 }}
+      resizeMode="cover" // Adjust this to your liking (e.g., "cover", "contain")
     >
-      <View style={styles.container}>
-        <Text style={styles.title}>WELCOME TO TWEET TECH</Text>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
+          <View style={{ width: '100%', alignItems: 'center', paddingHorizontal: 16 }}>
+            <Image
+              source={images.logo1}
+              style={{ width: logo1Size.width, height: logo1Size.height, marginTop: 40 }} // Adjusted size
+              resizeMode='contain'
+            />
+            <View style={{ marginTop: 1 }}>
+              <Text style={{ fontSize: 20, color: 'black', fontWeight: 'bold', textAlign: 'center' }}>
+                Share.Connect.Engage.
+              </Text>
+            </View>
+            <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black', marginTop: 50, textAlign: 'center' }}>
+              Share your knowledge as you engage and connect wiht other people.
+            </Text>
 
-        <TouchableOpacity onPress={() => router.push('/home')}>
-          <Image
-            source={logoImage}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-      </View>
+            <CustomButton
+              title="Continue To Connect"
+              handlePress={() => router.push('/sign-in')}
+              containerStyles={{ width: '90%', marginTop: 20 }} // Set custom width here
+            />
+          </View>
+        </ScrollView>
+        <StatusBar backgroundColor="orange" style="light" />
+      </SafeAreaView>
     </ImageBackground>
   );
 }
-
-const { height, width } = Dimensions.get('window');  
-
-const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: width,  
-    height: height,  
-    justifyContent: 'center',  
-    alignItems: 'center',  
-  },
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontFamily: 'RoadRage-Regular', 
-    fontSize: 75, 
-    color: '#121481',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  logo: {
-    width: 150,  
-    height: 150,
-  },
-});
