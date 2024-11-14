@@ -29,3 +29,5 @@ TweetTech Mobile App.
 
 # Tabs Screen
 <img src="assets/images/tabs.png">  
+
+<img src="assets/images/tabs.png">  
