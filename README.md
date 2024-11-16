@@ -19,13 +19,13 @@ TweetTech Mobile App.
 * HTML, CSS and JS
 
 # Home Screen
-<img src="assets/images/screenshot/onboarding.png">  
+<img src="assets/images/onboarding.png">  
 
 # Sign Up Screen
-<img src="assets/images/screenshot/signup.png">  
+<img src="assets/images/signup.png">  
 
 # Sign In Screen
-<img src="assets/images/screenshot/login.png">  
+<img src="assets/images/login.png">  
 
 # Tabs Screen
-<img src="assets/images/screenshot/tabs.png">  
+<img src="assets/images/tabs.png">   

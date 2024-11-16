@@ -30,4 +30,8 @@ const FormField = ({title,value,placeholder,handleChangeText,otherStyles,...prop
     </View>
   );
 };
+<<<<<<< HEAD
 export default FormField;
+=======
+export default FormField;
+>>>>>>> 27f49e03abfde2e81f43c8aa0f880db412d7ff35

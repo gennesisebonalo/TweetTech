@@ -47,4 +47,8 @@ export default function App() {
       </SafeAreaView>
     </ImageBackground>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 27f49e03abfde2e81f43c8aa0f880db412d7ff35
