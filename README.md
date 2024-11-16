@@ -2,16 +2,16 @@
 TweetTech Mobile App.
 
 # Features
-* Share Projects
-* Message other developers
-* Rate others work
-* Search other developers
+* Personalized Content Feed
+* User-Generated Content
+* Gamification Elements
 
 # Course Overview
-* Basic React Native Components
-* Database Design using Appwrite
+* Personalized Content Feed Development
+* Building Gamification Features
 * User Registration & Authenticaiton
-* Deployment
+* Real-Time Messaging and Interaction
+* Deployment and Scaling
 
 # Tech Stack
 * React Native

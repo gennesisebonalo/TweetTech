@@ -1,11 +1,10 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image, Dimensions, ImageBackground, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, ScrollView, Dimensions, Image, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
 // Image imports
-const backgroundImage = require('../../assets/images/background.png');
-const profileImage1 = require('../../assets/images/profile.jpg');  
-const profileImage2 = require('../../assets/images/profile2.jpg'); 
+const profileImage1 = require('../../assets/images/profile.jpg');
+const profileImage2 = require('../../assets/images/profile2.jpg');
 const profileImage3 = require('../../assets/images/profile3.jpg');
 const profileImage4 = require('../../assets/images/profile4.jpg');
 const profileImage5 = require('../../assets/images/profile5.jpg');
@@ -13,14 +12,23 @@ const samsungImage = require('../../assets/images/samsung.jpg');
 const thomasImage = require('../../assets/images/thomas.jpg');
 const appLogo = require('../../assets/images/logo.png');
 
+const { height, width } = Dimensions.get('window');
+
 const Home = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentImage, setCurrentImage] = useState(null);
+
+  const openModal = (image) => {
+    setCurrentImage(image);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
   return (
-    <ImageBackground 
-      source={backgroundImage} 
-      style={styles.background}
-      resizeMode="cover"
-      blurRadius={5}
-    >
+    <View style={styles.container}>
       {/* Header with Logo, Profile, and Settings */}
       <View style={styles.headerContainer}>
         <TouchableOpacity style={styles.iconButton}>
@@ -28,13 +36,13 @@ const Home = () => {
         </TouchableOpacity>
         <Image source={appLogo} style={styles.logo} />
         <TouchableOpacity style={styles.iconButton}>
-          <FontAwesome name="cog" size={24} color="blue" />
+          <FontAwesome name="cog" size={24} color="#121481" />
         </TouchableOpacity>
       </View>
 
-      {/* ScrollView to make the content scrollable */}
+      {/* Scrollable Content */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Create Post and Game Buttons */}
+        {/* Buttons */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.createPostButton}>
             <Text style={styles.buttonText}>Create Post</Text>
@@ -45,20 +53,33 @@ const Home = () => {
         </View>
 
         {/* Posts */}
-        {renderPost(profileImage1, "minyoongi", "@suga 51m", "Latest in Samsung", samsungImage, 2400, 1500000, 5700, 24000000)}
-        {renderPost(profileImage3, "junghoseok", "@jhope 1m", "Thomas Edison created the world's first industrial research laboratory and is known as the father of technology.", thomasImage, 2400, 1500000, 5700, 24000000)}
+        {renderPost(profileImage1, "minyoongi", "@suga 51m", "Latest in Samsung", samsungImage, 2400, 1500000, 5700, 24000000, openModal)}
+        {renderPost(profileImage3, "junghoseok", "@jhope 1m", "Thomas Edison created the world's first industrial research laboratory...", thomasImage, 2400, 1500000, 5700, 24000000, openModal)}
 
         {/* Status Updates */}
         {renderStatusUpdate(profileImage2, "jiminshi", "@ajimin", "Check AI-Generated Content Online", 143, 1143, 549, 1898)}
-        {renderStatusUpdate(profileImage5, "jinhyung", "@ajin", "\"Just read about the latest advancements in AI! It's amazing how technology is reshaping our world. 🤖✨ What are your thoughts on AI's future?\"", 22, 106, 376, 190)}
+        {renderStatusUpdate(profileImage5, "jinhyung", "@ajin", "Just read about the latest advancements in AI! Amazing stuff!", 22, 106, 376, 190)}
       </ScrollView>
-    </ImageBackground>
+
+      {/* Modal for Image Preview */}
+      <Modal visible={modalVisible} transparent={true} animationType="fade" onRequestClose={closeModal}>
+        <TouchableWithoutFeedback onPress={closeModal}>
+          <View style={styles.modalOverlay}>
+            <TouchableWithoutFeedback>
+              <View style={styles.modalContainer}>
+                <Image source={currentImage} style={styles.modalImage} resizeMode="contain" />
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    </View>
   );
 };
 
-// Function to render each post
-const renderPost = (profileImage, username, handle, postTitle, postImage, comments, retweets, likes, views) => (
-  <>
+// Function to render posts
+const renderPost = (profileImage, username, handle, postTitle, postImage, comments, retweets, likes, views, openModal) => (
+  <View style={styles.postContainer}>
     <View style={styles.header}>
       <Image source={profileImage} style={styles.profilePic} />
       <View>
@@ -66,25 +87,25 @@ const renderPost = (profileImage, username, handle, postTitle, postImage, commen
         <Text style={styles.handle}>{handle}</Text>
       </View>
     </View>
-    <View style={styles.postContainer}>
-      <Text style={styles.postTitle}>{postTitle}</Text>
-      <Image source={postImage} style={styles.postImage} resizeMode="contain" />
-      <View style={styles.postActions}>
-        <Text style={styles.actionsText}>{comments.toLocaleString()}</Text>
-        <FontAwesome name="comment" size={24} color="white" />
-        <Text style={styles.actionsText}>{retweets.toLocaleString()}</Text>
-        <FontAwesome name="retweet" size={24} color="white" />
-        <Text style={styles.actionsText}>{likes.toLocaleString()}</Text>
-        <FontAwesome name="heart" size={24} color="white" />
-        <Text style={styles.actionsText}>{views.toLocaleString()}</Text>
-      </View>
+    <Text style={styles.postTitle}>{postTitle}</Text>
+    <TouchableOpacity onPress={() => openModal(postImage)}>
+      <Image source={postImage} style={styles.postImage} />
+    </TouchableOpacity>
+    <View style={styles.postActions}>
+      <Text style={styles.actionsText}>{comments}</Text>
+      <FontAwesome name="comment" size={20} color="#121481" />
+      <Text style={styles.actionsText}>{retweets}</Text>
+      <FontAwesome name="retweet" size={20} color="#121481" />
+      <Text style={styles.actionsText}>{likes}</Text>
+      <FontAwesome name="heart" size={20} color="#121481" />
+      <Text style={styles.actionsText}>{views}</Text>
     </View>
-  </>
+  </View>
 );
 
-// Function to render each status update
+// Function to render status updates
 const renderStatusUpdate = (profileImage, username, handle, statusUpdate, comments, retweets, likes, views) => (
-  <>
+  <View style={styles.statusUpdateContainer}>
     <View style={styles.header}>
       <Image source={profileImage} style={styles.profilePic} />
       <View>
@@ -92,92 +113,66 @@ const renderStatusUpdate = (profileImage, username, handle, statusUpdate, commen
         <Text style={styles.handle}>{handle}</Text>
       </View>
     </View>
-    <View style={styles.statusUpdateContainer}>
-      <Text style={styles.statusUpdate}>{statusUpdate}</Text>
-      <View style={styles.postActions}>
-        <Text style={styles.actionsText}>{comments.toLocaleString()}</Text>
-        <FontAwesome name="comment" size={24} color="white" />
-        <Text style={styles.actionsText}>{retweets.toLocaleString()}</Text>
-        <FontAwesome name="retweet" size={24} color="white" />
-        <Text style={styles.actionsText}>{likes.toLocaleString()}</Text>
-        <FontAwesome name="heart" size={24} color="white" />
-        <Text style={styles.actionsText}>{views.toLocaleString()}</Text>
-      </View>
+    <Text style={styles.statusUpdate}>{statusUpdate}</Text>
+    <View style={styles.postActions}>
+      <Text style={styles.actionsText}>{comments}</Text>
+      <FontAwesome name="comment" size={20} color="#121481" />
+      <Text style={styles.actionsText}>{retweets}</Text>
+      <FontAwesome name="retweet" size={20} color="#121481" />
+      <Text style={styles.actionsText}>{likes}</Text>
+      <FontAwesome name="heart" size={20} color="#121481" />
+      <Text style={styles.actionsText}>{views}</Text>
     </View>
-  </>
+  </View>
 );
-
-const { height, width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-  background: {
+  container: {
     flex: 1,
-    width: width,
-    height: height,
-    justifyContent: 'flex-start', 
-    alignItems: 'flex-start',       
+    backgroundColor: '#f5f5f5',
   },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     padding: 10,
-    width: '100%',
+    backgroundColor: '#fff',
+    elevation: 5,
   },
   logo: {
-    width: 50,
-    height: 50,
-    alignSelf: 'center',
+    width: 40,
+    height: 40,
   },
   iconButton: {
-    marginHorizontal: 15,
+    padding: 5,
   },
   scrollContainer: {
-    paddingBottom: 20,
+    padding: 15,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginVertical: 20,
-    paddingHorizontal: 10,
+    marginBottom: 20,
   },
   createPostButton: {
     backgroundColor: '#478CCF',
-    padding: 15,
-    borderRadius: 30,
-    width: '50%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 5,
-    marginVertical: 10,
-    borderWidth: 2,
-    borderColor: '#1C6BA0',
+    padding: 10,
+    borderRadius: 10,
   },
   gameButton: {
     backgroundColor: '#86B6F6',
+    padding: 10,
+    borderRadius: 10,
+  },
+  postContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
     padding: 15,
-    borderRadius: 30,
-    width: '50%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 5,
-    marginVertical: 10,
-    borderWidth: 2,
-    borderColor: '#1C6BA0',
+    marginBottom: 15,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 10,
-    paddingHorizontal: 10,
+    marginBottom: 10,
   },
   profilePicHeader: {
     width: 40,
@@ -191,73 +186,52 @@ const styles = StyleSheet.create({
   },
   username: {
     fontWeight: 'bold',
-    color: 'black',
   },
   handle: {
-    color: '#3D3B40',
-  },
-  postContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 10,
-    padding: 10,
-    marginVertical: 10,
+    color: '#555',
   },
   postTitle: {
-    fontSize: 16,
-    color: 'white',
-    marginBottom: 5,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   postImage: {
     width: '100%',
     height: 200,
     borderRadius: 10,
-    marginBottom: 5,
   },
   postActions: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
+    justifyContent: 'space-around',
+    marginTop: 10,
   },
-  postContainer: {
-    backgroundColor: '#074173', // Slightly transparent white background
-    borderRadius: 10, // Rounded corners
-    padding: 15, // Increased padding for more space
-    marginVertical: 10, // Margin between posts
-    shadowColor: '#000', // Shadow color for elevation
-    shadowOffset: {
-        width: 0, // No horizontal offset
-        height: 4, // Vertical shadow offset
-    },
-    shadowOpacity: 0.3, // Shadow opacity
-    shadowRadius: 5, // Blur radius of the shadow
-    elevation: 5, // Android shadow elevation
-    borderWidth: 1, // Border width
-    borderColor: '#1C6BA0', // Border color
-},
   actionsText: {
-    color: 'white',
-    marginHorizontal: 5,
+    marginRight: 5,
   },
   statusUpdateContainer: {
-    backgroundColor: '#074173', // Slightly transparent white background
-    borderRadius: 10, // Rounded corners
-    padding: 15, // Increased padding for more space
-    marginVertical: 10, // Margin between posts
-    shadowColor: '#000', // Shadow color for elevation
-    shadowOffset: {
-        width: 0, // No horizontal offset
-        height: 4, // Vertical shadow offset
-    },
-    shadowOpacity: 0.3, // Shadow opacity
-    shadowRadius: 5, // Blur radius of the shadow
-    elevation: 5, // Android shadow elevation
-    borderWidth: 1, // Border width
-    borderColor: '#1C6BA0', // Border color
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
   },
   statusUpdate: {
-    color: 'white',
-    marginBottom: 5,
+    marginBottom: 10,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '90%',
+  },
+  modalImage: {
+    width: '100%',
+    height: 400,
+    borderRadius: 10,
   },
 });
 

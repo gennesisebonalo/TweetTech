@@ -1,153 +1,50 @@
-import React from 'react';
-import { StyleSheet, Text, View, ImageBackground, Image, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { ScrollView, Text, View, Image, ImageBackground } from 'react-native';
+import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { images } from '../../assets/constants/images';
+import CustomButton from '../assets/components/CustomButton';
 
-const backgroundImage = require('../../assets/images/background.png');
-const profileImage = require('../../assets/images/profile4.jpg');
-const postImage1 = require('../../assets/images/samsung.jpg'); 
-const postImage2 = require('../../assets/images/thomas.jpg');
+export default function App() {
+  const logo1Size = { width: 1000, height: 400 }; // Adjusted logo size
 
-const { height, width } = Dimensions.get('window');
-
-const Profile = () => {
-  const historyPosts = [
-    { id: 1, type: 'status', content: 'Just completed a new project! Feeling proud.', time: '1 hour ago' },
-    { id: 2, type: 'image', content: 'Samsung Event Highlights', image: postImage1, time: '2 days ago' },
-    { id: 3, type: 'status', content: 'Loving the new features in React Native! 🚀', time: '5 days ago' },
-    { id: 4, type: 'image', content: 'Technology Milestones: Thomas Edison', image: postImage2, time: '1 week ago' },
-  ];
+  // URL of the background image
+  const backgroundImageUrl = 'https://i.pinimg.com/736x/73/24/aa/7324aa0142aed97c5eb8b8f64c7d2937.jpg'; // Background image URL
 
   return (
-    <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover" blurRadius={5}>
-      <View style={styles.container}>
-        <Image source={profileImage} style={styles.profileImage} />
-        <Text style={styles.userName}>Gennesis Ashly</Text>
-        <Text style={styles.userBio}>Passionate about technology and coding. Tweet Tech enthusiast.</Text>
-        <TouchableOpacity style={styles.editButton}><Text style={styles.editButtonText}>Edit Profile</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.settingsButton}><Text style={styles.settingsButtonText}>Settings</Text></TouchableOpacity>
-      </View>
-      
-      <ScrollView style={styles.historyContainer}>
-        <Text style={styles.historyTitle}>History</Text>
+    <ImageBackground
+      source={{ uri: backgroundImageUrl }} // Using URL for background image
+      style={{ flex: 1 }}
+      resizeMode="cover" // Adjust this to your liking (e.g., "cover", "contain")
+    >
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
+          <View style={{ width: '100%', alignItems: 'center', paddingHorizontal: 16 }}>
+            <Image
+              source={images.logo1}
+              style={{ width: logo1Size.width, height: logo1Size.height, marginTop: 40 }} // Adjusted size
+              resizeMode='contain'
+            />
+            <View style={{ marginTop: 1 }}>
+              <Text style={{ fontSize: 20, color: 'black', fontWeight: 'bold', textAlign: 'center' }}>
+                Share.Connect.Engage.
+              </Text>
+            </View>
+            <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'black', marginTop: 50, textAlign: 'center' }}>
+              Share your knowledge as you engage and connect wiht other people.
+            </Text>
 
-        {/* Loop through historyPosts to display statuses or images */}
-        {historyPosts.map(post => (
-          <View key={post.id} style={styles.historyPost}>
-            <Text style={styles.postTime}>{post.time}</Text>
-            {post.type === 'status' ? (
-              <Text style={styles.statusText}>{post.content}</Text>
-            ) : (
-              <View style={styles.imagePostContainer}>
-                <Text style={styles.postContent}>{post.content}</Text>
-                <Image source={post.image} style={styles.postImage} resizeMode="contain" />
-              </View>
-            )}
+            <CustomButton
+              title="Continue To Connect"
+              handlePress={() => router.push('/sign-in')}
+              containerStyles={{ width: '90%', marginTop: 20 }} // Set custom width here
+            />
           </View>
-        ))}
-      </ScrollView>
+        </ScrollView>
+        <StatusBar backgroundColor="orange" style="light" />
+      </SafeAreaView>
     </ImageBackground>
   );
-};
-
-const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: width,
-    height: height,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  profileImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    borderWidth: 3,
-    borderColor: '#fff',
-    marginBottom: 20,
-  },
-  userName: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: 'black',
-    marginBottom: 10,
-  },
-  userBio: {
-    fontSize: 16,
-    color: 'black',
-    textAlign: 'center',
-    marginBottom: 20,
-    paddingHorizontal: 30,
-  },
-  editButton: {
-    backgroundColor: '#121481',
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 25,
-    marginBottom: 15,
-  },
-  editButtonText: {
-    fontSize: 18,
-    color: '#fff',
-  },
-  settingsButton: {
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 25,
-  },
-  settingsButtonText: {
-    fontSize: 18,
-    color: '#121481',
-  },
-  historyContainer: {
-    flex: 1,
-    marginTop: 20,
-    width: '100%',
-  },
-  historyTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    marginLeft: 20,
-    color: 'black',
-  },
-  historyPost: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-    marginHorizontal: 20,
-  },
-  postTime: {
-    fontSize: 12,
-    color: '#888',
-    marginBottom: 5,
-  },
-  statusText: {
-    fontSize: 16,
-    color: '#333',
-    fontWeight: 'bold',
-  },
-  imagePostContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  postContent: {
-    fontSize: 16,
-    color: 'black',
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  postImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 10,
-  },
-});
-
-export default Profile;
- 
+}
